@@ -1,11 +1,10 @@
-from Node import Node
-from RBTree import RBTree
 from enum import Enum
 
 
 class NodeColor(Enum):
     BLACK = 0
     RED = 1
+
 
 class Node(object):
 
@@ -17,9 +16,13 @@ class Node(object):
         self.value = data
 
     # Inorder traversal (Left -> Root -> Right)
+    def GetPrint(self, arr):
+        if self.left is not None: self.left.GetPrint(arr)
+        arr.append((self.value,self.color))
+        if self.right is not None: self.right.GetPrint(arr)
+
+    # Inorder traversal (Left -> Root -> Right)
     def Print(self):
-        if self is None:
-            return
-        self.left.Print()
-        print(self.value)
-        self.right.Print()
+        if self.left is not None: self.left.Print()
+        print((self.value,self.color))
+        if self.right is not None: self.right.Print()

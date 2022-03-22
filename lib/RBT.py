@@ -1,5 +1,5 @@
-from Node import Node, NodeColor
-from RBTree import RBTree
+from lib.Node import Node, NodeColor
+from lib.RBTree import RBTree
 
 
 def RBInsert(T: RBTree, x: Node):
