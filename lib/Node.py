@@ -12,7 +12,7 @@ class Node(object):
     def __init__(self, data, parent) -> None:
         self.left = None
         self.right = None
-        self.color = None
+        self.color = NodeColor.RED
         self.parent = parent
         self.value = data
 
