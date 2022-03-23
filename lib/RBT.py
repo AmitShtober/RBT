@@ -6,6 +6,11 @@ def RBInsert(T: RBTree, x: Node):
     # Insert in the tree in the usual way (BT)
     __Insert(T, x)
 
+    # when you only have root in the tree
+    if x.parent.parent is None and x.color == NodeColor.RED:
+        x.color = NodeColor.BLACK
+        return
+
     # let's restore RB properties to our tree
     x.color = NodeColor.RED
     while (x is not T.root) and (x.parent.color == NodeColor.RED):
@@ -54,6 +59,21 @@ def RBInsert(T: RBTree, x: Node):
     T.root.color = NodeColor.BLACK
 
 
+def RBTSearch(T: RBTree, value):
+    return __Search(T.root, value)
+
+
+def __Search(node: Node, value):
+    if node is None:
+        return False
+    if node.value == value:
+        return True
+    if node.value < value:
+        return __Search(node.right, value)
+    else:
+        return __Search(node.left, value)
+
+
 def __Insert(T: RBTree, x):
     if T is None or T.root is None:
         raise Exception("T is not Valid!")
@@ -64,12 +84,14 @@ def __Insert(T: RBTree, x):
 def __NodeInsert(node: Node, x):
     if x.value < node.value:
         if node.left is None:
-            node.left = Node(x, node)
+            node.left = x
+            x.parent = node
         else:
             __NodeInsert(node.left, x)
     elif x.value > node.value:
         if node.right is None:
-            node.right = Node(x, node)
+            node.right = x
+            x.parent = node
         else:
             __NodeInsert(node.right, x)
 
@@ -109,7 +131,7 @@ def __RightRotate(T: RBTree, x: Node):
     # Turn y's left sub-tree into x's right sub-tree
     x.left = y.right
     if y.right is not None:
-        y.left.parent = x
+        y.right.parent = x
     # y's new parent was x's parent
     y.parent = x.parent
 
@@ -126,3 +148,41 @@ def __RightRotate(T: RBTree, x: Node):
             x.parent.right = y
     y.right = x
     x.parent = y
+
+
+def RBTValid(T: RBTree):
+    return __InnerRBTValid(T.root)
+
+
+def __InnerRBTValid(node: Node):
+    black_path_from_top = []
+
+    try:
+        __DFS(node, 0, black_path_from_top)
+    except:
+        return -1
+
+    return black_path_from_top[0]
+
+
+def __DFS(node: Node, black_path: int, black_path_from_top):
+    if node.color == NodeColor.RED:
+        if node.left is not None and node.left.color != NodeColor.BLACK:
+            raise Exception("bad RBT")
+        if node.right is not None and node.right.color != NodeColor.BLACK:
+            raise Exception("bad RBT")
+
+    current_black_path = black_path
+    if node.color == NodeColor.BLACK:
+        current_black_path += 1
+
+    if node.left is None and node.right is None:
+        if len(black_path_from_top) == 0:
+            black_path_from_top.append(current_black_path)
+        elif black_path_from_top[0] != current_black_path:
+            raise Exception("bad RBT")
+
+    if node.left is not None:
+        __DFS(node.left, current_black_path, black_path_from_top)
+    if node.right is not None:
+        __DFS(node.right, current_black_path, black_path_from_top)
